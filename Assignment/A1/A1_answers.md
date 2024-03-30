@@ -8,7 +8,7 @@ SID: 12110517
 
 1. C
 2. D
-3. AB (Virtue ethics is currently one of three major approaches in normative ethics [from Stanford Encyclopedia of Philosophy], I am not sure if C should be inclueded.)
+3. AB (Virtue ethics is currently one of three major approaches in normative ethics [from Stanford Encyclopedia of Philosophy], I am not sure if C should be inclueded.) Update: Should be ABC.
 4. D
 5. B
 6. D
