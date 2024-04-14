@@ -433,31 +433,23 @@ Conditional Statistical Parity means the protected and unprotected groups should
 L = `gender, age`
 
 - L = ('Male', '30-60 years')
-
       The `African American` group has the highest proportion of positive predictions (0.3582), followed by the `Caucasian` group (0.3179). The maximum difference is observed between the `African American` and `Unknown` groups.
-
       The model is biased towards the `African American` and `Caucasian` groups, with the `Asian` and `Unknown` groups having the lowest proportion of being readmitted.
 
 - L = ('Male', 'Over 60 years')
-
       The `Hispanic` group has the highest proportion of positive predictions (0.4741), followed by the `AfricanAmerican` group . The maximum difference is observed between the `Hispanic` and `Unknown` groups.
-
       The model is biased towards the `Hispanic` and `AfricanAmerican` groups, with the `Asian` and `Unknown` groups having the lowest proportion of being readmitted.
 
 - L = ('Male', '30 years or younger')
-
       Same as above, the model is biased towards the `Hispanic` and `AfricanAmerican` groups, with the `Asian` and `Unknown` groups having the lowest proportion of being readmitted (**even  `0`!**).
 
 - L = ('Female', '30-60 years')
-
       Same. Biased towards the `Caucasian` and `AfricanAmerican` groups, with the `Asian` and `Unknown` groups having the lowest proportion of being readmitted.
 
 - L = ('Female', 'Over 60 years')
-
       Same. Biased towards the `Caucasian` and `AfricanAmerican` groups, with the `Asian` and `Unknown` groups having the lowest proportion of being readmitted.
 
 - L = ('Female', '30 years or younger')
-
       Biased towards the `Caucasian` and `Other` groups, with the `Asian` and `Unknown` groups having the lowest proportion of being readmitted (**even  `0`**!). 
 
 ## 5. Conclusion
