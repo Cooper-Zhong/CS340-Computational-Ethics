@@ -14,11 +14,17 @@ Zhiyuan Zhong 12110517
 
 ## 1. Model Selection
 
-Following the reference baseline, I used `LogisticRegression`, `DecisionTreeClassifier`, `RandomForestClassifier`, and `XGBClassifier`. The test results are in files `Logistic_Regression.csv`, `Decision_Tree.csv`, `Random_Forest.csv`, and `XGBoost.csv`, repsectively. The original models files are `logistic_regression_model.joblib`, `decision_tree_model.joblib`, `random_forest_model.joblib`, and `xgboost_model.joblib`, respectively.
+Following the reference baseline, I used `LogisticRegression`, `DecisionTreeClassifier`, `RandomForestClassifier`, `XGBClassifier` and `GridSearchCV`. The test results are in files `Logistic_Regression.csv`, `Decision_Tree.csv`, `Random_Forest.csv`, `XGBoost.csv`, `GridSearchCV.csv` repsectively. The original models files are `logistic_regression_model.joblib`, `decision_tree_model.joblib`, `random_forest_model.joblib`, `xgboost_model.joblib`, and `grid_model.joblib` respectively.
 
 ## 2. Bias Evaluation
 
-Following Assignment 2, I used `Demographic Parity` as the fairness metric. Below are the scores for each model.
+Following Assignment 2, I used `Demographic Parity` as the fairness metric. 
+
+- `Demographic Parity` is the ratio of the probability of a positive outcome given the sensitive attribute value to the probability of a positive outcome given other sensitive attribute value. The closer the ratio is to 1, the less biased the model is.
+- Formula: $ P(Y’ = 1 | A=0) = P(Y’ = 1 | A = 1)$
+- Definition: The likelihood of a positive outcome should be the same regardless of whether the person is in the protected group.
+
+Below are the scores for each model:
 
 ### Logistic Regression
 
@@ -84,6 +90,23 @@ Difference:  0.1344910179640718
 Ratio:  0.8217460317460318
 ```
 
+### GridSearchCV
+
+```
+Gender: 
+Male 0.7676767676767676
+Female 0.7142857142857143
+Difference:  0.05339105339105332
+Ratio:  0.9304511278195491
+
+Race: 
+Black 0.8323353293413174
+White 0.695
+Difference:  0.13733532934131742
+Ratio:  0.835
+```
+
+
 We can see that the models are mainly baised towards `Male` and `Black` groups. 
 
 Here we use the average of `Race` and `Gender` demographic parity ratio as the fairness score. The higher the score, the less biased the model is. 
@@ -91,8 +114,11 @@ Here we use the average of `Race` and `Gender` demographic parity ratio as the f
 ```
 Model('DecisionTree', fair_score=0.8326049541475075)
 Model('RandomForest', fair_score=0.8392728604599735)
+Model('GridSearch', fair_score=0.8827255639097745)
 Model('XGB', fair_score=0.889234360410831)
 Model('Logistic', fair_score=0.9427970616725864)
+
+avg fair score:  0.8773269601201346
 ```
 
 ## 3. Bias Mitigation
@@ -107,20 +133,20 @@ We can expand the dataset by adding more data to the underrepresented groups. Th
 
 **Original Data:**
 
-Gender distribution:
+- Gender distribution:
 ![gender](./pics/gender_distribution.png)
 
-Race distribution:
+- Race distribution:
 ![race](./pics/race_distribution.png)
 
 The data is biased towards `Black` and `Male`. To expand, for all rows, generate 3 new rows with different `Race` and `Gender` values. In other words, if the `Race` and `Gender` attribute of the original row is `Black` and `Male`, then generate 3 new rows with `White` and `Male`, `Black` and `Female`, `White` and `Female`.
 
 **After expansion:**
 
-Gender distribution:
+- Gender distribution:
 ![gender_new](./pics/gender_distribution_new.png)
 
-Race distribution:
+- Race distribution:
 ![race_new](./pics/race_distribution_new.png)
 
 The data is balanced.
@@ -191,32 +217,53 @@ Difference:  0.1144910179640718
 Ratio:  0.8482539682539684
 ```
 
+#### GridSearchCV (after)
+
+```
+Gender: 
+Male 0.7171717171717171
+Female 0.6
+Difference:  0.11717171717171715
+Ratio:  0.8366197183098592
+
+Race: 
+Black 0.7904191616766467
+White 0.615
+Difference:  0.17541916167664673
+Ratio:  0.7780681818181818
+```
+
+
 ## 4. Comparison
 
 
 - Old Model List:
 ```
 Model('DecisionTree', fair_score=0.8326049541475075)
-Model('Logistic', fair_score=0.9427970616725864)
 Model('RandomForest', fair_score=0.8392728604599735)
+Model('GridSearch', fair_score=0.8827255639097745)
 Model('XGB', fair_score=0.889234360410831)
-avg fair score:  0.8759773091727245
+Model('Logistic', fair_score=0.9427970616725864)
+
+avg fair score:  0.8773269601201346
 ```
 
 - New Model List:
 ```
 Model('DecisionTree', fair_score=0.892081520128523)
+Model('GridSearch', fair_score=0.8073439500640205)
 Model('Logistic', fair_score=0.90017124068551)
 Model('RandomForest', fair_score=0.8702114318643324)
 Model('XGB', fair_score=0.856456029489205)
-avg fair score:  0.8797300555418927
+
+avg fair score:  0.8652528344463182
 ```
 
-We can see that the averge fairness score of the models has slightly increased after the bias mitigation. 
+We can see that the averge fairness score of the models has slightly decreased after the bias mitigation. That is because expanding dataset might not work well for all the models.
 
-The fairness score of the `Decision Tree` and `Random Forest` models have increased. However, the fairness score of the `Logistic Regression` model and  `XGBoost` model has decreased.
+For example, the fairness score of the `Decision Tree` and `Random Forest` models have increased. However, the fairness score of the `Logistic Regression` model and  `XGBoost` model has decreased.
 
-Considering `Race` and `Gender` respectively:
+**Let's consider `Race` and `Gender` respectively:**
 
 - **Race:**
 ```
@@ -224,21 +271,26 @@ Old Model List:
 
 Race: 
 DecisionTree: 0.7850
+GridSearch: 0.8350
 Logistic: 0.9477
 RandomForest: 0.8411
 XGB: 0.8217
-avg race score:  0.8489069647935469
+
+avg race score:  0.8461255718348376
 
 
 New Model List:
 
 Race: 
 DecisionTree: 0.8479
+GridSearch: 0.7781
 Logistic: 0.8471
 RandomForest: 0.8472
 XGB: 0.8483
-avg race score:  0.8476227337463342
+
+avg race score:  0.8337118233607038
 ```
+
 
 - **Gender:**
 ```
@@ -246,28 +298,34 @@ Old Model List:
 
 Gender: 
 DecisionTree: 0.8802
+GridSearch: 0.9305
 Logistic: 0.9379
 RandomForest: 0.8374
 XGB: 0.9567
-avg gender score:  0.9030476535519023
+
+avg gender score:  0.9085283484054317
 
 New Model List:
 
 Gender: 
 DecisionTree: 0.9362
+GridSearch: 0.8366
 Logistic: 0.9532
 RandomForest: 0.8932
 XGB: 0.8647
-avg gender score:  0.9118373773374508
+
+avg gender score:  0.8967938455319325
 ```
 
-In terms of `Race`, `Decision Tree` model has increased the most. But the fairness score of the `Logistic Regression` model has decreased.
+In terms of `Race`, the fairness of  `Decision Tree`, `XGB`, `RandomForest` model has increased. But the fairness score of the `Logistic Regression` and `GridSearch` model has decreased.
 
-In terms of `Gender`, the fairness score of the `XGB` model has decreased the most. But others have increased.
+In terms of `Gender`, the fairness score of the `DecisionTree`, `Logistic`, `RandomForest` have increased.
 
 ## 5. Conclusion
 
-Different models have different sensitivity to data. Considering models(algorithms), using `Logistic Regression` model can help mitigate bias. Considering data, expanding the dataset can help mitigate bias for `Decision_Tree` and `Random_Forest` models.
+Different models have different sensitivity to data. Considering models(algorithms), using `Logistic Regression` model can help mitigate bias. 
+
+Considering data, expanding the dataset can help mitigate bias for `Decision_Tree` and `Random_Forest` models. Note that the effects of expanding data really depends on the model, and it might not work well for all models.
 
 
 
